@@ -1,6 +1,6 @@
 # C++ MHD Convection Onset Solver using Chebyshev Collocation method
 
-This project implements a C++ solver to determine the critical parameters (Rayleigh number `Ra`, wavenumber `kx`) for the onset of convection in a magnetohydrodynamic (MHD) system. It uses a Chebyshev collocation method in the Y and Z dimensions and solves the resulting large, sparse generalized eigenvalue problem.
+This program implements a C++ solver to determine the critical parameters (Rayleigh number `Ra`, wavenumber `kx`) for the onset of convection in a magnetohydrodynamic (MHD) system. It uses a Chebyshev collocation method in the Y and Z dimensions and solves the resulting large, sparse generalized eigenvalue problem.
 
 ## Core Features
 
@@ -22,40 +22,32 @@ This project implements a C++ solver to determine the critical parameters (Rayle
 
 ## Directory Structure
 
-/home/prakhar/onset_2d/
-│
-├── CMakeLists.txt             # Main CMake build script
-├── params.ini                 # NEW Parameter input file
-│
-├── external/                  # Dependencies (header-only libraries)
-│   └── spectra/               # <--- Place Spectra headers here (need to be downloaded and installed separately, not included in this package)
-│       └── include/
-│           └── Spectra/       # Core Spectra headers (e.g., GenEigsRealShiftSolver.h)
-│
-├── src/                       # Source code files (.h and .cpp)
-│   ├── main.cpp
-│   ├── params.h
-│   ├── params.cpp
-│   ├── utils.h
-│   ├── utils.cpp
-│   ├── cheb.h
-│   ├── cheb.cpp
-│   ├── bc.h
-│   ├── bc.cpp
-│   ├── coeffs.h
-│   ├── coeffs.cpp
-│   ├── matrix_builder.h
-│   ├── matrix_builder.cpp
-│   ├── eigen_solver.h
-│   └── eigen_solver.cpp
-│
-├── build/                     # Build directory (you create this)
-│   └── (CMake files, Makefile, executable 'onset_solver' appear here after build)
-│
-├── output/                    # Output files (created by the program during runtime)
-│   └── (Racvskc_*.txt, critical_vector_*.txt files appear here)
-│
-└── README.md                  # Project documentation
+.
+├── CMakeLists.txt # Build script
+├── params.ini # Parameter input file
+├── external/ # Dependencies (Requires manual setup)
+│ └── spectra/ # <--- Place Spectra headers here
+│ └── include/
+│ └── Spectra/ # (Core Spectra headers)
+├── src/ # Source code
+│ ├── main.cpp # Main driver
+│ ├── params.h # Parameter definitions
+│ ├── params.cpp # Parameter loading from file
+│ ├── utils.h # Utility function declarations
+│ ├── utils.cpp # Utility function implementations
+│ ├── cheb.h # Chebyshev function declaration
+│ ├── cheb.cpp # Chebyshev function implementation
+│ ├── bc.h # Boundary condition declarations
+│ ├── bc.cpp # Boundary condition implementation
+│ ├── coeffs.h # Variable coefficient declarations
+│ ├── coeffs.cpp # Variable coefficient implementation
+│ ├── matrix_builder.h # GEP matrix assembly declaration
+│ ├── matrix_builder.cpp # GEP matrix assembly implementation
+│ ├── eigen_solver.h # Eigensolver wrapper declaration
+│ └── eigen_solver.cpp # Eigensolver wrapper implementation
+├── build/ # Build directory (created by user)
+├── output/ # Output directory (created by program)
+└── README.md # This file
 
 ## Setup & Dependencies
 
@@ -107,6 +99,7 @@ This project implements a C++ solver to determine the critical parameters (Rayle
 The `params.ini` file uses a simple `key = value` format. Comments start with `#`. Key parameters include:
 
 *   `Ek`, `Pr`, `Pm`, `elsm`, `delta`, `m`, `chim`: Physical parameters. `elsm` and `chim` can be lists (only first `chim` used, loops over `elsm`).
+
      (Ekman, Prandtl, magnetic Prandtl, Elsasser, field length scale, polytropic index and density ratio respectively)
 *   `ny`, `nz`: Grid points (N+1).
 *   `p`, `sigma1`: Eigenvalue solver parameters (number sought near `sigma1`).
