@@ -56,10 +56,12 @@ This program implements a C++ solver to determine the critical parameters (Rayle
 
 1.  **Compiler & CMake:** Install a suitable C++ compiler and CMake (see previous instructions for your OS).
 2.  **Eigen:** Install via your system's package manager (e.g., `sudo apt install libeigen3-dev`) or download from the Eigen website and ensure CMake can find it.
-3.  **Spectra:**
-    *   Download Spectra (e.g., v1.1.0) from its GitHub repository releases page.
-    *   Extract the archive.
-    *   Copy the `include/` directory from the extracted Spectra files *into* the `external/spectra/` directory within this project. The final path should look like `external/spectra/include/Spectra/`.
+3.  **Spectra Installation:**
+    ```bash
+    mkdir external
+    cd external
+    git clone  https://github.com/yixuan/spectra.git
+    ```
 
 ## Build Instructions
 
@@ -67,12 +69,6 @@ This program implements a C++ solver to determine the critical parameters (Rayle
     ```bash
     mkdir build
     cd build
-    ```
-2.  **3rd Party Installations**
-    ```bash
-    mkdir external
-    cd external
-    git clone  https://github.com/yixuan/spectra.git
     ```
 2.  **Configure with CMake:**
     ```bash
