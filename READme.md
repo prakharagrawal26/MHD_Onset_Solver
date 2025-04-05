@@ -68,6 +68,12 @@ This program implements a C++ solver to determine the critical parameters (Rayle
     mkdir build
     cd build
     ```
+2.  **3rd Party Installations**
+    ```bash
+    mkdir external
+    cd external
+    git clone  https://github.com/yixuan/spectra.git
+    ```
 2.  **Configure with CMake:**
     ```bash
     cmake ..
