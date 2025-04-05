@@ -22,32 +22,7 @@ This program implements a C++ solver to determine the critical parameters (Rayle
 
 ## Directory Structure
 
-.
-├── CMakeLists.txt # Build script
-├── params.ini # Parameter input file
-├── external/ # Dependencies (Requires manual setup)
-│ └── spectra/ # <--- Place Spectra headers here
-│ └── include/
-│ └── Spectra/ # (Core Spectra headers)
-├── src/ # Source code
-│ ├── main.cpp # Main driver
-│ ├── params.h # Parameter definitions
-│ ├── params.cpp # Parameter loading from file
-│ ├── utils.h # Utility function declarations
-│ ├── utils.cpp # Utility function implementations
-│ ├── cheb.h # Chebyshev function declaration
-│ ├── cheb.cpp # Chebyshev function implementation
-│ ├── bc.h # Boundary condition declarations
-│ ├── bc.cpp # Boundary condition implementation
-│ ├── coeffs.h # Variable coefficient declarations
-│ ├── coeffs.cpp # Variable coefficient implementation
-│ ├── matrix_builder.h # GEP matrix assembly declaration
-│ ├── matrix_builder.cpp # GEP matrix assembly implementation
-│ ├── eigen_solver.h # Eigensolver wrapper declaration
-│ └── eigen_solver.cpp # Eigensolver wrapper implementation
-├── build/ # Build directory (created by user)
-├── output/ # Output directory (created by program)
-└── README.md # This file
+<pre lang="markdown"> ```text . ├── CMakeLists.txt # Build script ├── params.ini # Parameter input file ├── external/ # Dependencies (Requires manual setup) │ └── spectra/ # <--- Place Spectra headers here │ └── include/ │ └── Spectra/ # (Core Spectra headers) ├── src/ # Source code │ ├── main.cpp # Main driver │ ├── params.h # Parameter definitions │ ├── params.cpp # Parameter loading from file │ ├── utils.h # Utility function declarations │ ├── utils.cpp # Utility function implementations │ ├── cheb.h # Chebyshev function declaration │ ├── cheb.cpp # Chebyshev function implementation │ ├── bc.h # Boundary condition declarations │ ├── bc.cpp # Boundary condition implementation │ ├── coeffs.h # Variable coefficient declarations │ ├── coeffs.cpp # Variable coefficient implementation │ ├── matrix_builder.h # GEP matrix assembly declaration │ ├── matrix_builder.cpp # GEP matrix assembly implementation │ ├── eigen_solver.h # Eigensolver wrapper declaration │ └── eigen_solver.cpp # Eigensolver wrapper implementation ├── build/ # Build directory (created by user) ├── output/ # Output directory (created by program) └── README.md # This file ``` </pre>
 
 ## Setup & Dependencies
 
