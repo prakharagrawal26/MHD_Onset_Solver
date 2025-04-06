@@ -18,4 +18,4 @@ VariableCoeffs calculate_coeffs(
                      int B_profile,
                      double els);
 
-#endif // COEFFS_H
+#endif

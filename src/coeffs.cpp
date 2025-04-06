@@ -84,7 +84,7 @@ VariableCoeffs calculate_coeffs( // Renamed function
     Eigen::MatrixXd ux0_grid, uz0_grid;
     if (B_profile == 1 && std::abs(els) > 1e-15) {
         ux0_grid = -els * m * theta / 2.0 * c7_grid.array() * Z2.array() * (-2.0 * Z2.array()).exp(); // Corrected using c7
-        uz0_grid = Eigen::MatrixXd::Zero(nz_len, ny_len); // MATLAB uz0 term is zero/problematic
+        uz0_grid = Eigen::MatrixXd::Zero(nz_len, ny_len);
     } else {
         ux0_grid = Eigen::MatrixXd::Zero(nz_len, ny_len);
         uz0_grid = Eigen::MatrixXd::Zero(nz_len, ny_len);

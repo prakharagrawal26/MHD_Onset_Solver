@@ -1,11 +1,10 @@
-#include "params.h"          // Use new header name
-#include "utils.h"           // Use new header name
-#include "cheb.h"            // Use new header name
-#include "bc.h"              // Use new header name
-#include "coeffs.h"          // Use new header name
-#include "matrix_builder.h"  // Use new header name
-#include "eigen_solver.h"    // Use new header name
-
+#include "params.h" 
+#include "utils.h" 
+#include "cheb.h"  
+#include "bc.h"    
+#include "coeffs.h"    
+#include "matrix_builder.h"  
+#include "eigen_solver.h"    
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -17,12 +16,12 @@
 #include <omp.h>
 #include <filesystem>
 
-int main(int argc, char* argv[]) { // Allow command-line arg for param file
+int main(int argc, char* argv[]) { 
     auto t_start_main = std::chrono::high_resolution_clock::now();
     double omp_t_start_main = omp_get_wtime();
 
-    // --- Load Parameters ---
-    std::string param_filename = "params.ini"; // Default filename
+    //  Load Parameters 
+        std::string param_filename = "params.ini"; // Default filename
     if (argc > 1) { // Check if filename provided on command line
         param_filename = argv[1];
     }
@@ -40,13 +39,15 @@ int main(int argc, char* argv[]) { // Allow command-line arg for param file
     std::cout << "Grid size: ny=" << ny << ", nz=" << nz << std::endl;
     std::cout << "Running for chi = " << (params.chim.empty() ? 0.0 : params.chim[0]) << std::endl;
 
-    // --- Setup Grid and Differentiation Matrices ---
+    // --- Setup grid and derivative matrices ---
     std::cout << "Setting up Chebyshev grid and matrices..." << std::endl;
     Eigen::MatrixXd Dy1d_dense, D2y1d_dense, Dz1d_dense, D2z1d_dense;
     Eigen::VectorXd yy_cheb, zz_cheb, yy, zz;
+
     cheb(ny - 1, Dy1d_dense, yy_cheb);
     Dy1d_dense *= (Y_range_scale / params.Asp);
     D2y1d_dense = Dy1d_dense * Dy1d_dense;
+
     if (params.Y_range == 2.0) yy = params.Asp * (yy_cheb.array() + 1.0) / 2.0;
     else yy = params.Asp * yy_cheb.array() / 2.0;
 
@@ -56,19 +57,24 @@ int main(int argc, char* argv[]) { // Allow command-line arg for param file
     if (params.Z_range == 2.0) zz = (zz_cheb.array() + 1.0) / 2.0;
     else zz = zz_cheb;
 
-    Eigen::SparseMatrix<double> Dy1d = Dy1d_dense.sparseView(); Eigen::SparseMatrix<double> Dz1d = Dz1d_dense.sparseView();
-    Eigen::SparseMatrix<double> D2y1d = D2y1d_dense.sparseView(); Eigen::SparseMatrix<double> D2z1d = D2z1d_dense.sparseView();
-    Eigen::SparseMatrix<double> Iy = sparse_identity(ny); Eigen::SparseMatrix<double> Iz = sparse_identity(nz);
+    Eigen::SparseMatrix<double> Dy1d = Dy1d_dense.sparseView(); 
+    Eigen::SparseMatrix<double> Dz1d = Dz1d_dense.sparseView();
+    Eigen::SparseMatrix<double> D2y1d = D2y1d_dense.sparseView(); 
+    Eigen::SparseMatrix<double> D2z1d = D2z1d_dense.sparseView();
+    Eigen::SparseMatrix<double> Iy = sparse_identity(ny); 
+    Eigen::SparseMatrix<double> Iz = sparse_identity(nz);
     Eigen::SparseMatrix<double> I_full = kron_sparse(Iy, Iz);
-    Eigen::SparseMatrix<double> I2_full = create_I2(ny, nz); // Use renamed util
-    Eigen::SparseMatrix<double> Dy_full = kron_sparse(Dy1d, Iz); Eigen::SparseMatrix<double> Dz_full = kron_sparse(Iy, Dz1d);
-    Eigen::SparseMatrix<double> D2y_full = kron_sparse(D2y1d, Iz); Eigen::SparseMatrix<double> D2z_full = kron_sparse(Iy, D2z1d);
+    Eigen::SparseMatrix<double> I2_full = create_I2(ny, nz); 
+    Eigen::SparseMatrix<double> Dy_full = kron_sparse(Dy1d, Iz); 
+    Eigen::SparseMatrix<double> Dz_full = kron_sparse(Iy, Dz1d);
+    Eigen::SparseMatrix<double> D2y_full = kron_sparse(D2y1d, Iz);
+    Eigen::SparseMatrix<double> D2z_full = kron_sparse(Iy, D2z1d);
 
     Eigen::MatrixXd Y_grid, Z_grid;
     meshgrid(zz, yy, Z_grid, Y_grid);
     std::cout << "Grid setup complete." << std::endl;
 
-    // --- Loop over chim and elsm --- (Only first chim value used)
+    // Loop over chim and elsm
     if (params.chim.empty() || params.elsm.empty()) { std::cerr << "Error: chim or elsm empty!\n"; return 1; }
     double chi = params.chim[0];
 
@@ -111,7 +117,6 @@ int main(int argc, char* argv[]) { // Allow command-line arg for param file
                  Eigen::setNbThreads(1); // Ensure serial Eigen if not nesting
             }
 
-
             double kx = params.k1[rr];
             Eigen::SparseMatrix<double> D2_kx = D2y_full + D2z_full - (kx * kx) * I_full;
             DiffMatrices diff = {I_full, I2_full, Dy_full, Dz_full, D2y_full, D2z_full, D2_kx};
@@ -144,12 +149,14 @@ int main(int argc, char* argv[]) { // Allow command-line arg for param file
                      flag1 = solve_eigenproblem(A_local, B_local, params.p, params.sigma1, false).flag;
                      flag2 = 1; // Assume end is still unstable
                      continue;
+
                  } else if (flag1 == 0 && flag2 == 0) { // Both stable
                      Ra_strt = Ra_endd; Ra_endd += params.Ra_extend_step;
                      build_matrix(kx, params.Ek, params.Pr, params.Pm, els, Ra_endd, params.m, params.theta, params.mean_flow, bc, coeffs, diff, A_local, B_local);
                      flag1 = 0; // Assume start is still stable
                      flag2 = solve_eigenproblem(A_local, B_local, params.p, params.sigma1, false).flag;
                      continue;
+
                  } else if (flag1 == 0 && flag2 == 1) { // Bracketed
                      Ra_low_unstable = std::min(Ra_low_unstable, Ra_endd);
                      double Ra_midd = (Ra_strt + Ra_endd) / 2.0;
@@ -158,15 +165,20 @@ int main(int argc, char* argv[]) { // Allow command-line arg for param file
                      flag3 = solve_eigenproblem(A_local, B_local, params.p, params.sigma1, false).flag;
                      if (flag3 == 0) { Ra_strt = Ra_midd; flag1 = 0; }
                      else { Ra_endd = Ra_midd; flag2 = 1; Ra_low_unstable = std::min(Ra_low_unstable, Ra_endd); }
+
                  } else { /* ... error & break ... */ current_flag = 0; break; }
                  if (iter >= max_iter) { /* ... warning & break ... */ current_flag = (flag2 == 1) ? 3 : 2; break; }
-            } // end while binary search
+            } 
+            // end while binary search
 
             if (current_flag == 1) current_flag = 3; // Finished by tolerance
 
             // Store result
-            double final_Rac = std::nan(""); double final_eig_real = std::nan(""); double final_eig_imag = std::nan("");
+            double final_Rac = std::nan(""); 
+            double final_eig_real = std::nan(""); 
+            double final_eig_imag = std::nan("");
             Eigen::VectorXcd current_crit_vec;
+
             if (current_flag == 3) { // Success
                 final_Rac = Ra_low_unstable;
                 if (std::isfinite(final_Rac)) {
@@ -191,15 +203,13 @@ int main(int argc, char* argv[]) { // Allow command-line arg for param file
                      if (current_crit_vec.size() > 0) critical_eig_vec_at_min_Ra = current_crit_vec;
                      else critical_eig_vec_at_min_Ra.resize(0);
                 }
-                 // Optional: Reduced printing inside loop
                  // if (rr % 10 == 0) { // Print every 10 iterations
                      std::cout << "  kx = " << std::fixed << std::setprecision(4) << kx
                                << ", Ra_c = " << std::scientific << std::setprecision(6) << final_Rac << std::defaultfloat << std::endl;
                  // }
             } // end critical
 
-        } // end parallel for rr
-
+        } 
         // --- Post-processing and Saving ---
         double Racmin = std::numeric_limits<double>::infinity(); double kxc = -1.0; int index_min = -1;
         for (int rr = 0; rr < num_k; ++rr) if (std::isfinite(Rac_results[rr]) && Rac_results[rr] >= 0 && Rac_results[rr] < Racmin) { Racmin = Rac_results[rr]; kxc = params.k1[rr]; index_min = rr; }
@@ -208,7 +218,7 @@ int main(int argc, char* argv[]) { // Allow command-line arg for param file
             std::cout << std::fixed << std::setprecision(6);
             std::cout << "Minimum critical Ra_c = " << Racmin << " found at kx = " << kxc << "\n";
              if (std::abs(Racmin - min_Rac_for_vec) > 1e-6 || critical_eig_vec_at_min_Ra.size() == 0) {
-                  std::cout << "Recalculating eigenvector at precise minimum..." << std::endl;
+                  std::cout << "Recalculating eigenvector at precise minimum   " << std::endl;
                   Eigen::SparseMatrix<double> A_crit, B_crit; Eigen::SparseMatrix<double> D2_crit = D2y_full + D2z_full - (kxc * kxc) * I_full;
                   DiffMatrices diff_crit = {I_full, I2_full, Dy_full, Dz_full, D2y_full, D2z_full, D2_crit};
                   build_matrix(kxc, params.Ek, params.Pr, params.Pm, els, Racmin, params.m, params.theta, params.mean_flow, bc, coeffs, diff_crit, A_crit, B_crit);
@@ -216,7 +226,7 @@ int main(int argc, char* argv[]) { // Allow command-line arg for param file
                    if (final_res.flag == 1 && final_res.leading_critical_eig_vec.size() > 0) critical_eig_vec_at_min_Ra = final_res.leading_critical_eig_vec;
                    else { std::cerr << "Warning: Failed to recalculate critical eigenvector.\n"; critical_eig_vec_at_min_Ra.resize(0); }
              }
-        } else { std::cout << "\nCould not find valid minimum critical Ra_c for els_base = " << els_base << ".\n"; }
+        } else { std::cout << "\n Could not find valid minimum critical Ra_c for els_base = " << els_base << ".\n"; }
 
         // --- Save Results ---
         std::string out_dir = "output";

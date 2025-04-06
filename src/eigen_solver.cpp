@@ -1,32 +1,24 @@
-#include "eigen_solver.h" // Use new header name
-
-// Core Spectra Includes
-#include <Spectra/GenEigsRealShiftSolver.h>
-#include <Spectra/MatOp/SparseGenMatProd.h>
-
-// Eigen Includes
-#include <Eigen/SparseLU>
-#include <Eigen/Core>
-#include <Eigen/SparseCore>
-
-// Standard C++ Includes
 #include <vector>
 #include <limits>
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <complex>
+#include <Spectra/GenEigsRealShiftSolver.h>
+#include <Spectra/MatOp/SparseGenMatProd.h>
+#include <Eigen/SparseLU>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+#include "eigen_solver.h"
 
-namespace { // Keep helper classes internal to this file
-
-// Comparator for sorting complex eigenvalues by real part (descending)
+namespace { 
+// Sorting complex eigenvalues by real part (in descending order)
 struct CompareEigenvaluesRealDesc {
     bool operator()(const std::complex<double>& a, const std::complex<double>& b) const {
         return a.real() > b.real();
     }
 };
 
-// Custom Operator Class for Shift-and-Invert (Ax = lambda Bx)
 // Computes y = (A - sigma B)^-1 B x
 class ShiftInvertGenOp {
 public:
@@ -72,10 +64,9 @@ public:
             y.setZero();
         }
     }
-}; // End internal class ShiftInvertGenOp
+};
 
-} // End anonymous namespace
-
+} 
 
 // Main Solver Function using the Custom Operator
 SolverResult solve_eigenproblem( // Renamed function
@@ -85,10 +76,10 @@ SolverResult solve_eigenproblem( // Renamed function
     double sigma,        // sigma1
     bool find_vector)
 {
-    SolverResult result; // Use specific result struct
+    SolverResult result;
     int n = A.rows();
 
-    // --- Input Validation & Parameter Adjustment ---
+    // Input Validation & Parameter Adjustment
     if (n == 0) { result.flag = 0; std::cerr << "Eigen Solver Error: Input matrices empty.\n"; return result; }
     if (A.cols() != n || B.rows() != n || B.cols() != n) { result.flag = 0; std::cerr << "Eigen Solver Error: Matrix dimensions mismatch.\n"; return result; }
     if (num_eigenvalues <= 0) { result.flag = 0; std::cerr << "Eigen Solver Error: Num eigenvalues must be positive.\n"; return result; }
@@ -97,9 +88,9 @@ SolverResult solve_eigenproblem( // Renamed function
     if (ncv <= num_eigenvalues) { ncv = std::min(num_eigenvalues + 1, n); }
     if (num_eigenvalues >= ncv || ncv > n) { result.flag = 0; std::cerr << "Eigen Solver Error: Invalid config nev=" << num_eigenvalues << ", ncv=" << ncv << ", n=" << n << "\n"; return result; }
 
-    // --- Spectra Solve ---
+    // Solve using Spectra library
     try {
-        ShiftInvertGenOp op(A, B, sigma); // Use operator from anonymous namespace
+        ShiftInvertGenOp op(A, B, sigma);
 
         Spectra::GenEigsRealShiftSolver<ShiftInvertGenOp> geigs(op, num_eigenvalues, ncv, sigma);
 
@@ -114,12 +105,12 @@ SolverResult solve_eigenproblem( // Renamed function
 
             Eigen::VectorXcd op_eigenvalues = geigs.eigenvalues();
             result.all_eig.resize(op_eigenvalues.size());
-            for(int i=0; i<op_eigenvalues.size(); ++i) { // Convert back to original eigenvalues
+            for(int i=0; i<op_eigenvalues.size(); ++i) { 
                   if (std::abs(op_eigenvalues(i)) < std::numeric_limits<double>::epsilon() * 100) { result.all_eig(i) = std::complex<double>(std::numeric_limits<double>::infinity(), 0.0); }
                   else { result.all_eig(i) = sigma + 1.0 / op_eigenvalues(i); }
             }
 
-            // Filter critical eigenvalues (Match solver.m thresholds)
+            // Filter critical eigenvalues
             const double threshold_magnitude = 5e3;
             const double real_upper_bound = 300.0;
             int leading_critical_idx = -1;
