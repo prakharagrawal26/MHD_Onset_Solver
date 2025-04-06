@@ -10,8 +10,6 @@ struct BoundaryConditions {
     Eigen::SparseMatrix<double> BCUx, BCUy, BCUz, BCBx, BCBy, BCBz, BCS;
 };
 
-// Helper function (internal linkage suggested if only used in bc.cpp)
-// static Eigen::SparseMatrix<double> call_BC(...)
 Eigen::SparseMatrix<double> call_BC(int n_points, int tt, const Eigen::MatrixXd& DD_dense);
 
 // Main function to set up all boundary conditions
@@ -22,4 +20,4 @@ BoundaryConditions setup_BC(
                             int BCzvel, int BCzmag,
                             int BCyvel, int BCymag);
 
-#endif // BC_H
+#endif

@@ -61,7 +61,7 @@ BoundaryConditions setup_BC(
     Eigen::SparseMatrix<double> BCyBz_1d = call_BC(ny_points, tt_y[5], Dy1d_dense);
     Eigen::SparseMatrix<double> BCyS_1d  = call_BC(ny_points, tt_y[6], Dy1d_dense);
 
-    // Combine using Kronecker products (replicating MATLAB BC.m)
+    // Combine using Kronecker products
     Eigen::SparseMatrix<double> Iy_full = sparse_identity(ny_points);
     Eigen::SparseMatrix<double> Iz_full = sparse_identity(nz_points);
 
@@ -76,7 +76,7 @@ BoundaryConditions setup_BC(
     Iy2.setFromTriplets(triplets_y2.begin(), triplets_y2.end());
     Iz2.setFromTriplets(triplets_z2.begin(), triplets_z2.end());
 
-    // Apply kron products as in MATLAB
+    // Do kron products
     Eigen::SparseMatrix<double> BCzUx_full = kron_sparse(Iy2, BCzUx_1d);
     Eigen::SparseMatrix<double> BCzUy_full = kron_sparse(Iy2, BCzUy_1d);
     Eigen::SparseMatrix<double> BCzUz_full = kron_sparse(Iy2, BCzUz_1d);
