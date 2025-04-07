@@ -26,7 +26,6 @@ void meshgrid(const Eigen::VectorXd& zz_vec, // Input vector for rows
 Eigen::SparseMatrix<double> sparse_identity(int n);
 
 // Helper to create the I2 matrix variants (identity on interior points)
-// Takes ny, nz which are N+1 sizes from MATLAB context
 Eigen::SparseMatrix<double> create_I2(int ny_rows, int nz_rows);
 
-#endif // UTILS_H
+#endif

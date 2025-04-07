@@ -7,7 +7,7 @@
 
 // Structure to hold simulation parameters
 struct Params {
-    // Provide sensible defaults, can be overridden by input file
+    // Default values provided for all parameters, can make changes using params.ini file
     // Physical Params
     double Ek = 1e-5;
     double Pr = 1.0;
@@ -50,17 +50,16 @@ struct Params {
     // Binary Search Params
     double Ra_start = 50.0;      // Initial lower bound for Ra search
     double Ra_end_init = 140.0;  // Initial upper bound
-    double Ra_extend_step = 10.0;// Amount to add if both bounds stable
+    double Ra_extend_step = 10.0;// Amount to add if both bounds are stable
     double Ra_reduce_step = 10.0;// Amount to subtract if both unstable
     double Ra_search_limit = 250.0;// Upper limit for extending search
     double Ra_accuracy = 0.05;   // Tolerance |Ra_end - Ra_start|
 
-    // Parallelism Params (Informational - control via OMP env vars/calls)
+    // Parallelism Params
     int outer_threads = 4; // Example default
     int inner_threads = 1; // Example default
 
     // --- Derived Parameter Calculation ---
-    // Call this *after* loading parameters from file
     void calculate_derived() {
         q = Pm / Pr;
 
@@ -76,8 +75,6 @@ struct Params {
              } else { theta = 0.0; }
         } else { theta = 0.0; }
 
-        // Calculate k1 wavenumbers if not read explicitly
-        // (File reading logic in params.cpp will handle 'k1 = ...' line)
         if (k1.empty()) { // Generate sequence only if k1 wasn't specified in file
             k1.resize(k_length);
             if (k_length > 0) {
@@ -93,4 +90,4 @@ struct Params {
 // Function declarations
 bool load_params_from_file(const std::string& filename, Params& params);
 
-#endif // PARAMS_H
+#endif

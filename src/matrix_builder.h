@@ -1,11 +1,11 @@
 #ifndef MATRIX_BUILDER_H
 #define MATRIX_BUILDER_H
 
-#include "bc.h"     // Use new header name
-#include "coeffs.h" // Use new header name
+#include "bc.h"     
+#include "coeffs.h" 
 #include <Eigen/Sparse>
 
-// Structure to hold differentiation matrices
+// Structure to store differentiation matrices
 struct DiffMatrices {
     const Eigen::SparseMatrix<double>& I;
     const Eigen::SparseMatrix<double>& I2;
@@ -20,10 +20,10 @@ struct DiffMatrices {
 void build_matrix(
     double kx, double Ek, double Pr, double Pm, double els, double Ra,
     double m, double theta, int mean_flow,
-    const BoundaryConditions& bc,       // Use renamed struct
-    const VariableCoeffs& coeffs,     // Use renamed struct
+    const BoundaryConditions& bc,       
+    const VariableCoeffs& coeffs,     
     const DiffMatrices& diff,
     Eigen::SparseMatrix<double>& A,
     Eigen::SparseMatrix<double>& B);
 
-#endif // MATRIX_BUILDER_H
+#endif

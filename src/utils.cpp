@@ -71,7 +71,6 @@ void meshgrid(const Eigen::VectorXd& zz_vec, // Input vector for rows
               Eigen::MatrixXd& Z_grid,       // Output grid Z(i,j) = zz_vec(i)
               Eigen::MatrixXd& Y_grid)      // Output grid Y(i,j) = yy_vec(j)
 {
-    // ... (implementation identical to utils_collocation.cpp) ...
     int nz_len = zz_vec.size();
     int ny_len = yy_vec.size();
 
@@ -90,7 +89,6 @@ void meshgrid(const Eigen::VectorXd& zz_vec, // Input vector for rows
 
 // Sparse Identity
 Eigen::SparseMatrix<double> sparse_identity(int n) {
-    // ... (implementation identical to utils_collocation.cpp) ...
     if (n <= 0) {
         throw std::runtime_error("Identity matrix size must be positive.");
     }
@@ -100,7 +98,6 @@ Eigen::SparseMatrix<double> sparse_identity(int n) {
 }
 
 // Create I2 variant (Identity on inner points)
-// Renamed from create_I2_collocation
 Eigen::SparseMatrix<double> create_I2(int ny_rows, int nz_rows) {
     // ... (implementation identical to create_I2_collocation) ...
      if (ny_rows < 2 || nz_rows < 2) {

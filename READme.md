@@ -122,7 +122,6 @@ Results are saved in the `output/` directory (created in the run location):
 *   `critical_vector_chi*_els*.txt`: Contains the complex eigenvector corresponding to the overall minimum critical Ra found for that Elsasser number. Format is `RealPart ImaginaryPart` per line.
 
 ## Notes
-
 *   The shift-and-invert eigenvalue solver targets eigenvalues closest to `sigma1`.
 *   The binary search finds the lowest `Ra` where the real part of a filtered eigenvalue becomes positive.
 *   Memory usage can be high for large grids (`ny`, `nz`), primarily due to the LU factorization in the shift-and-invert step. The outer loop parallelism distributes this memory requirement across iterations but doesn't reduce the peak per iteration.

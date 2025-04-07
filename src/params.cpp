@@ -7,7 +7,7 @@
 #include <vector>
 #include <stdexcept> // for exceptions
 
-// Helper function to trim leading/trailing whitespace
+// trim leading and trailing whitespace
 std::string trim(const std::string& str) {
     size_t first = str.find_first_not_of(" \t\n\r\f\v");
     if (std::string::npos == first) {
@@ -17,7 +17,6 @@ std::string trim(const std::string& str) {
     return str.substr(first, (last - first + 1));
 }
 
-// Helper function to parse comma-separated doubles
 std::vector<double> parse_double_vector(const std::string& value_str) {
     std::vector<double> vec;
     std::stringstream ss(value_str);
@@ -40,7 +39,6 @@ std::vector<double> parse_double_vector(const std::string& value_str) {
     }
     return vec;
 }
-
 
 // Load parameters from a key-value file
 bool load_params_from_file(const std::string& filename, Params& params) {
@@ -81,15 +79,15 @@ bool load_params_from_file(const std::string& filename, Params& params) {
             continue;
         }
 
-        // Assign value to the corresponding struct member
+        // Assign value to the struct member
         try {
             if (key == "Ek") params.Ek = std::stod(value_str);
             else if (key == "Pr") params.Pr = std::stod(value_str);
             else if (key == "Pm") params.Pm = std::stod(value_str);
-            else if (key == "elsm") params.elsm = parse_double_vector(value_str); // Vector parsing
+            else if (key == "elsm") params.elsm = parse_double_vector(value_str); 
             else if (key == "delta") params.delta = std::stod(value_str);
             else if (key == "m") params.m = std::stod(value_str);
-            else if (key == "chim") params.chim = parse_double_vector(value_str); // Vector parsing
+            else if (key == "chim") params.chim = parse_double_vector(value_str); 
             else if (key == "ny") params.ny = std::stoi(value_str);
             else if (key == "nz") params.nz = std::stoi(value_str);
             else if (key == "p") params.p = std::stoi(value_str);
@@ -100,7 +98,7 @@ bool load_params_from_file(const std::string& filename, Params& params) {
             else if (key == "k_length") params.k_length = std::stoi(value_str);
             else if (key == "kstrt") params.kstrt = std::stod(value_str);
             else if (key == "kdiff") params.kdiff = std::stod(value_str);
-            else if (key == "k1") params.k1 = parse_double_vector(value_str); // Read explicit k1 list
+            else if (key == "k1") params.k1 = parse_double_vector(value_str);
             else if (key == "BCzmag") params.BCzmag = std::stoi(value_str);
             else if (key == "BCzvel") params.BCzvel = std::stoi(value_str);
             else if (key == "BCymag") params.BCymag = std::stoi(value_str);
